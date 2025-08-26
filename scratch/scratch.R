@@ -8,8 +8,8 @@ library(tidyverse)
 library(ggplot2)
 library(lubridate)
 
-#Read in data from Bisley and Puente Roto Mameyes
-BQ1 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca1-Bisley.csv"))
+#Read in data from Bisley and Puente Roto Mameyes rivers
+BQ1river <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca1-Bisley.csv"))
 BQ2 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca2-Bisley.csv"))
 BQ3 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca3-Bisley.csv"))
 MPR <- read_csv(here::here("data", "stream-water-pr","RioMameyesPuenteRoto.csv"))      
@@ -66,23 +66,19 @@ lubridate::mdy(my_date)
 
 #plot K
 
-
 ggplot(data = streams, aes(x = sample_date, y = k)) +
   geom_line()
 
-#figure out moving time
-
-
-streams <- streams %>% mutate(sample_date = lubridate::mdy(sample_date))
+#figure out moving time, 9 week moving time 
 
 
 
 
-foo <- data.frame(a = 1:3, b = 4:6)
-bar <- data.frame(a = 7:9, b = 10:12)
-foo
-bar
-rbind(foo, bar)
+
+
+
+
+
 
 
 
