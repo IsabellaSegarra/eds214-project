@@ -9,7 +9,7 @@ library(ggplot2)
 library(lubridate)
 
 #Read in data from Bisley and 
-BQ1 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca1-Bisley.csv"))
+BQ1creek <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca1-Bisley.csv"))
 BQ2 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca2-Bisley.csv"))
 BQ3 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca3-Bisley.csv"))
 MPR <- read_csv(here::here("data", "stream-water-pr","RioMameyesPuenteRoto.csv"))      
