@@ -41,28 +41,6 @@ BQ2 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca2-Bisley.csv
 BQ3 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca3-Bisley.csv"))
 MPR <- read_csv(here::here("data", "stream-water-pr","RioMameyesPuenteRoto.csv"))      
 
-#Grouping by chemical- K
-#BQ1_chemicals -- columns for each chemical 
-# or full join BQ1_k, BQ2_k, BQ3_k, MPR_k 
-
-BQ1_k <- BQ1 %>% 
-  group_by(sample_date, k) %>% 
-  filter()
-
-BQ1_k <- BQ1 %>% 
-  select(sample_date, k)
-
-BQ2_k <- BQ2 %>% 
-  select(sample_date, k)
-
-BQ3_k <- BQ3 %>% 
-  select(sample_date, k)
-
-MPR_k <- MPR %>% 
-  select(sample_date, k)
-
-streams_k <- full_join(BQ1_k, BQ2_k, BQ3_k, MPR_k)
-
 
 # Grouping by chemical 
 BQ1_chemicals <- BQ1 %>%
@@ -98,6 +76,27 @@ moving_average(focal_date = as.Date("1986-05-20"),
                              dates = BQ1_chemicals$sample_date,
                              conc = BQ1_chemicals$ca,
                              win_size_wks = 9)
+
+#Apply function to all of BQ1 chemicals
+BQ1_chemicals$rolling_avg <- sapply(
+  BQ1_chemicals$sample_date,
+  moving_average,
+  dates = BQ1_chemicals$sample_date,
+  conc = BQ1_chemicals$ca,
+  win_size_wks = 9
+)
+
+ggplot(data = BQ1_chemicals, aes(x = ))
+
+#Call function
+source("R/moving_averages_function.R")
+
+#Apply function again
+
+moving_average(focal_date = as.Date("1986-05-20"),
+               dates = BQ1_chemicals$sample_date,
+               conc = BQ1_chemicals$ca,
+               win_size_wks = 9)
 
 
 
