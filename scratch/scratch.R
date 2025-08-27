@@ -1,18 +1,39 @@
-#clear global environmnet
+#................Processing stream chemistry data................
+  #set up
+    #clear global environment
 rm(list=ls())
 
-#Load libraries
+    #Load libraries
 library(here)
 library(janitor)
 library(tidyverse)
 library(ggplot2)
 library(lubridate)
 
-#Read in data from Bisley and Puente Roto Mameyes rivers
-BQ1river <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca1-Bisley.csv"))
-BQ2 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca2-Bisley.csv"))
-BQ3 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca3-Bisley.csv"))
-MPR <- read_csv(here::here("data", "stream-water-pr","RioMameyesPuenteRoto.csv"))      
+
+#Read stream data 
+
+BQ1 <- read_csv(here::here("data", 
+                           "stream-water-pr",
+                           "QuebradaCuenca1-Bisley.csv"))
+
+BQ2 <- read_csv(here::here("data", 
+                           "stream-water-pr",
+                           "QuebradaCuenca2-Bisley.csv"))
+
+BQ3 <- read_csv(here::here("data", 
+                           "stream-water-pr",
+                           "QuebradaCuenca3-Bisley.csv"))
+
+MPR <- read_csv(here::here("data", 
+                           "stream-water-pr",
+                           "RioMameyesPuenteRoto.csv")) 
+
+#....Clean data....
+BQ1 %>% 
+  janitor::clean_names() 
+
+
 
 #Grouping by chemical- K
 #BQ1_chemicals -- columns for each chemical 
@@ -37,7 +58,7 @@ MPR_k <- MPR %>%
 streams_k <- full_join(BQ1_k, BQ2_k, BQ3_k, MPR_k)
 
 
-#Another way
+# Grouping by chemical 
 BQ1_chemicals <- BQ1 %>%
   select(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)
 
@@ -50,30 +71,71 @@ BQ3_chemicals <- BQ2 %>%
 MPR_chemicals <- MPR %>% 
   select(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)
 
-#streams <- full_join(BQ1_chemicals, BQ2_chemicals, BQ3_chemicals, MPR_chemicals) 
 
-streams_2 <- rbind(BQ1_chemicals, BQ2_chemicals, BQ3_chemicals, MPR_chemicals)
+#create function for moving average
+
+moving_average <- function(focal_date, dates, conc, win_size_wks) {
+  # Which dates are in the window?
+  is_in_window <- (dates > focal_date - (win_size_wks / 2) * 7) &
+    (dates < focal_date + (win_size_wks / 2) * 7)
+  # Find the associated concentrations
+  window_conc <- conc[is_in_window]
+  # Calculate the mean
+  result <- mean(window_conc)
+  
+  return(result)
+}
+
+#test function with BQ1_chemicals 
+
+moving_average(focal_date = as.Date("1986-05-20"),
+                             dates = BQ1_chemicals$sample_date,
+                             conc = BQ1_chemicals$ca,
+                             win_size_wks = 9)
 
 
-foo <- data.frame(a = 1:3, b = 4:6)
-bar <- data.frame(a = 7:9, b = 10:12)
-foo
-bar
-rbind(foo, bar)
 
 
-lubridate::mdy(my_date)
 
-#plot K
 
-ggplot(data = streams, aes(x = sample_date, y = k)) +
-  geom_line()
+#Combine dataframes into new dataset 
+streams <- rbind(BQ1_chemicals, BQ2_chemicals, BQ3_chemicals, MPR_chemicals)
+
+#--- end of tidy code---
+
+
 
 #figure out moving time, 9 week moving time 
 
+#take out week from year
 
+streams_2 <- streams_2 %>% 
+  mutate(week = lubridate::week(sample_date))
 
+i<- streams_2$week
+for (i) in ncol(k) {
+  if(week <= 9) {
+    else(summarise())
+  }
+}
 
+if (condition) {
+  # Code to execute if the condition is TRUE
+} else {
+  # Optional: Code to execute if the condition is FALSE
+
+  
+  function_name <- function(argument1, argument2, ...) {
+    # Code before the loop (optional)
+    
+    for (variable in sequence) {
+      # Code to be executed in each iteration
+      # 'variable' takes on the value of each element in 'sequence'
+    }
+    
+    # Code after the loop (optional)
+    return(result) # Return a value if desired
+  }
 
 
 
