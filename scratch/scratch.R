@@ -35,6 +35,12 @@ BQ1 %>%
 
 
 
+#Read in data from Bisley and 
+BQ1 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca1-Bisley.csv"))
+BQ2 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca2-Bisley.csv"))
+BQ3 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca3-Bisley.csv"))
+MPR <- read_csv(here::here("data", "stream-water-pr","RioMameyesPuenteRoto.csv"))      
+
 #Grouping by chemical- K
 #BQ1_chemicals -- columns for each chemical 
 # or full join BQ1_k, BQ2_k, BQ3_k, MPR_k 
