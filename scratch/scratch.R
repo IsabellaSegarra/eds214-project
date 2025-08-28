@@ -56,6 +56,30 @@ MPR_chemicals <- MPR %>%
   select(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)
 
 
+#Group by chemical in each stream 
+  #BQ1 stream 
+BQ1_k <- BQ1 %>% 
+  select(sample_date, k)
+
+BQ1_ca <- BQ1 %>% 
+  select(sample_date, ca)
+
+BQ1_mg <- BQ1 %>% 
+  select(sample_date, mg)
+
+BQ1_no3n <- BQ1 %>% 
+  select(sample_date,no3_n)
+
+BQ1_nh4_n <- BQ1 %>% 
+  select(sample_date, nh4_n)
+
+#Apply function
+moving_average(focal_date = as.Date("1986-05-20"),
+               dates = BQ1_chemicals$sample_date,
+               conc = BQ1_chemicals$ca,
+               win_size_wks = 9)
+
+
 #create function for moving average
 
 moving_average <- function(focal_date, dates, conc, win_size_wks) {
@@ -77,7 +101,7 @@ moving_average(focal_date = as.Date("1986-05-20"),
                              conc = BQ1_chemicals$ca,
                              win_size_wks = 9)
 
-#Apply function to all of BQ1 chemicals
+#Apply function to all of BQ1 chemicals and add new column 
 BQ1_chemicals$rolling_avg <- sapply(
   BQ1_chemicals$sample_date,
   moving_average,
