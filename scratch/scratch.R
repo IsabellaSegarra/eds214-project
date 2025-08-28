@@ -35,7 +35,7 @@ BQ1 %>%
 
 
 
-#Read in data from Bisley and 
+#Read in data from streams
 BQ1 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca1-Bisley.csv"))
 BQ2 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca2-Bisley.csv"))
 BQ3 <- read_csv(here::here("data", "stream-water-pr","QuebradaCuenca3-Bisley.csv"))
@@ -55,7 +55,7 @@ BQ3_chemicals <- BQ2 %>%
 MPR_chemicals <- MPR %>% 
   select(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)
 
-
+#-------
 #Group by chemical in each stream 
   #BQ1 stream 
 BQ1_k <- BQ1 %>% 
@@ -73,12 +73,26 @@ BQ1_no3n <- BQ1 %>%
 BQ1_nh4_n <- BQ1 %>% 
   select(sample_date, nh4_n)
 
-#Apply function
-moving_average(focal_date = as.Date("1986-05-20"),
-               dates = BQ1_chemicals$sample_date,
-               conc = BQ1_chemicals$ca,
+#Apply function for 
+rolling_mean(focal_date = as.Date("1986-05-20"),
+               dates = BQ1_k$sample_date,
+               conc = BQ1_k$k,
                win_size_wks = 9)
 
+BQ1_k$rolling_avg <- sapply(
+  BQ1_k$sample_date,
+  rolling_mean,
+  dates = BQ1_k$sample_date,
+  conc = BQ1_k$k,
+  win_size_wks = 9
+)
+
+# plot just Bq1_k 
+
+ggplot(data = BQ1_k, aes(x = sample_date, y = rolling_avg))+
+  geom_line()
+
+#-------------------------------
 
 #create function for moving average
 
@@ -102,16 +116,55 @@ moving_average(focal_date = as.Date("1986-05-20"),
                              win_size_wks = 9)
 
 #Apply function to all of BQ1 chemicals and add new column 
-BQ1_chemicals$rolling_avg <- sapply(
+  #Ca
+BQ1_chemicals$rolling_avg_ca <- sapply(
   BQ1_chemicals$sample_date,
-  moving_average,
+  rolling_mean,
   dates = BQ1_chemicals$sample_date,
   conc = BQ1_chemicals$ca,
   win_size_wks = 9
 )
+  #Mg
+BQ1_chemicals$rolling_avg_mg <- sapply(
+  BQ1_chemicals$sample_date,
+  rolling_mean,
+  dates = BQ1_chemicals$sample_date,
+  conc = BQ1_chemicals$mg,
+  win_size_wks = 9
+)
 
-ggplot(data = BQ1_chemicals, aes(x = sample_date, y = rolling_avg, na.rm = TRUE))+
-  geom_line()
+  #k
+BQ1_chemicals$rolling_avg_k <- sapply(
+  BQ1_chemicals$sample_date,
+  rolling_mean,
+  dates = BQ1_chemicals$sample_date,
+  conc = BQ1_chemicals$k,
+  win_size_wks = 9
+)
+
+  #no3_n
+BQ1_chemicals$rolling_avg_no3_n <- sapply(
+  BQ1_chemicals$sample_date,
+  rolling_mean,
+  dates = BQ1_chemicals$sample_date,
+  conc = BQ1_chemicals$no3_n,
+  win_size_wks = 9
+)
+
+  #nh4_n
+BQ1_chemicals$rolling_avg_nh4_n <- sapply(
+  BQ1_chemicals$sample_date,
+  rolling_mean,
+  dates = BQ1_chemicals$sample_date,
+  conc = BQ1_chemicals$nh4_n,
+  win_size_wks = 9
+)
+
+BQ1_rolling <- BQ1_chemicals %>% 
+  select(sample_date, rolling_avg_ca, rolling_avg_mg, rolling_avg_k, rolling_avg_no3_n, rolling_avg_nh4_n)
+
+
+#Plot 
 
 #Call function
 source("R/moving_averages_function.R")
@@ -135,11 +188,11 @@ BQ2_chemicals$rolling_avg <- sapply(
 
 
 
-#Combine dataframes into new dataset 
+#Combine dataframes into new dataset ###
 streams <- rbind(BQ1_chemicals, BQ2_chemicals, BQ3_chemicals, MPR_chemicals)
 
-streams_wider <- streams %>%  
-  pivot_wider(names_from = sample_id,
+streams_longer <- streams %>%  
+  pivot_longer(names_from = ,
               values_from = )
 
 #--- end of tidy code---
