@@ -43,7 +43,7 @@ MPR <- read_csv(here::here("data", "stream-water-pr","RioMameyesPuenteRoto.csv")
 
 
 # Grouping by chemical 
-BQ1_chemicals <- BQ1 %>%
+BQ1_chemicals2 <- BQ1 %>%
   select(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)
 
 BQ2_chemicals <- BQ2 %>% 
@@ -58,7 +58,7 @@ MPR_chemicals <- MPR %>%
 
 #create function for moving average
 
-moving_average <- function(focal_date, dates, conc, win_size_wks) {
+rolling_mean <- function(focal_date, dates, conc, win_size_wks) {
   # Which dates are in the window?
   is_in_window <- (dates > focal_date - (win_size_wks / 2) * 7) &
     (dates < focal_date + (win_size_wks / 2) * 7)
@@ -89,22 +89,27 @@ BQ1_chemicals$rolling_avg <- sapply(
 ggplot(data = BQ1_chemicals, aes(x = ))
 
 #Call function
-source("R/moving_averages_function.R")
+source("R/rolling_mean_function.R")
 
 #Apply function again
 
-moving_average(focal_date = as.Date("1986-05-20"),
+rolling_mean(focal_date = as.Date("1986-05-20"),
                dates = BQ1_chemicals$sample_date,
                conc = BQ1_chemicals$ca,
                win_size_wks = 9)
 
 
 
-
+  
 
 
 #Combine dataframes into new dataset 
-streams <- rbind(BQ1_chemicals, BQ2_chemicals, BQ3_chemicals, MPR_chemicals)
+streams <- rbind(BQ1_chemicals2, BQ2_chemicals, BQ3_chemicals, MPR_chemicals)
+
+streams_long <- streams %>%  
+  pivot_longer(cols = "sample_id", 
+               names_to = 'sample_id', 
+               values_to = 'tilapia_volume_kpounds') 
 
 #--- end of tidy code---
 
