@@ -86,7 +86,8 @@ BQ1_chemicals$rolling_avg <- sapply(
   win_size_wks = 9
 )
 
-ggplot(data = BQ1_chemicals, aes(x = ))
+ggplot(data = BQ1_chemicals, aes(x = sample_date, y = rolling_avg, na.rm = TRUE))+
+  geom_line()
 
 #Call function
 source("R/moving_averages_function.R")
@@ -99,12 +100,23 @@ moving_average(focal_date = as.Date("1986-05-20"),
                win_size_wks = 9)
 
 
+BQ2_chemicals$rolling_avg <- sapply(
+  BQ2_chemicals$sample_date,
+  rolling_mean,
+  dates = BQ2_chemicals$sample_date,
+  conc = BQ2_chemicals$ca,
+  win_size_wks = 9
+)
 
 
 
 
 #Combine dataframes into new dataset 
 streams <- rbind(BQ1_chemicals, BQ2_chemicals, BQ3_chemicals, MPR_chemicals)
+
+streams_wider <- streams %>%  
+  pivot_wider(names_from = sample_id,
+              values_from = )
 
 #--- end of tidy code---
 
