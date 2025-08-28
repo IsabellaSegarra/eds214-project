@@ -3,7 +3,7 @@ title: "paper"
 format: html
 ---
 
-## Background
+# Background
 A study (Schaefer et al. 2000) investigated the effects of stream water quality in Puerto Rico after the 1989 Hurricane Hugo. They analyzed the level of nutrients over time and found that potassium levels stayed elevated for years afterwards. 
 
 ## Data
@@ -45,7 +45,7 @@ BQ3_chemicals <- BQ2 %>%
 MPR_chemicals <- MPR %>% 
   select(sample_date, k, no3_n, mg, ca, nh4_n)
 
-#2. Create function to calcualte rolling mean. This step was done in the "R/rolling_mean_function.R" r script in the R folder. 
+#2. Create function to calculate rolling mean. This step was done in the "R/rolling_mean_function.R" r script in the R folder. 
 
 source("R/rolling_mean_function.R")
 
@@ -138,28 +138,126 @@ BQ2_chemicals$bq2_nh4_n <- sapply(
 )
 
   #---BQ3---
+ #Ca
+BQ3_chemicals$bq3_ca <- sapply(
+  BQ3_chemicals$sample_date,
+  rolling_mean,
+  dates = BQ3_chemicals$sample_date,
+  conc = BQ3_chemicals$ca,
+  win_size_wks = 9
+)
+  #Mg
+BQ3_chemicals$bq3_mg <- sapply(
+  BQ3_chemicals$sample_date,
+  rolling_mean,
+  dates = BQ3_chemicals$sample_date,
+  conc = BQ3_chemicals$mg,
+  win_size_wks = 9
+)
+  #k
+BQ3_chemicals$bq3_k <- sapply(
+  BQ3_chemicals$sample_date,
+  rolling_mean,
+  dates = BQ3_chemicals$sample_date,
+  conc = BQ3_chemicals$k,
+  win_size_wks = 9
+)
+  #no3_n
+BQ3_chemicals$bq3_no3_n <- sapply(
+  BQ3_chemicals$sample_date,
+  rolling_mean,
+  dates = BQ3_chemicals$sample_date,
+  conc = BQ3_chemicals$no3_n,
+  win_size_wks = 9
+)
 
+  #nh4_n
+BQ3_chemicals$bq3_nh4_n <- sapply(
+  BQ3_chemicals$sample_date,
+  rolling_mean,
+  dates = BQ3_chemicals$sample_date,
+  conc = BQ3_chemicals$nh4_n,
+  win_size_wks = 9
+)
   #---MPR---
+ #Ca
+MPR_chemicals$mpr_ca <- sapply(
+  MPR_chemicals$sample_date,
+  rolling_mean,
+  dates = MPR_chemicals$sample_date,
+  conc = MPR_chemicals$ca,
+  win_size_wks = 9
+)
+  #Mg
+MPR_chemicals$mpr_mg <- sapply(
+  MPR_chemicals$sample_date,
+  rolling_mean,
+  dates = MPR_chemicals$sample_date,
+  conc = MPR_chemicals$mg,
+  win_size_wks = 9
+)
+  #k
+MPR_chemicals$mpr_k <- sapply(
+  MPR_chemicals$sample_date,
+  rolling_mean,
+  dates = MPR_chemicals$sample_date,
+  conc = MPR_chemicals$k,
+  win_size_wks = 9
+)
+  #no3_n
+MPR_chemicals$mpr_no3_n <- sapply(
+  MPR_chemicals$sample_date,
+  rolling_mean,
+  dates = MPR_chemicals$sample_date,
+  conc = MPR_chemicals$no3_n,
+  win_size_wks = 9
+)
 
+  #nh4_n
+MPR_chemicals$mpr_nh4_n <- sapply(
+  MPR_chemicals$sample_date,
+  rolling_mean,
+  dates = MPR_chemicals$sample_date,
+  conc = MPR_chemicals$nh4_n,
+  win_size_wks = 9
+)
 
 #4. Put rolling average data into new data frames
   #---BQ1---
 BQ1_rolling <- BQ1_chemicals %>% 
-  select(sample_date, bq1_ca,bq1_mg, bq1_k, bq1_no3_n, bq1_nh4_n)
+  select(sample_date, bq1_ca, bq1_mg, bq1_k, bq1_no3_n, bq1_nh4_n)
 
   #---BQ2--
 BQ2_rolling <- BQ2_chemicals %>% 
 select(sample_date, bq2_ca, bq2_mg, bq2_k, bq2_no3_n, bq2_nh4_n)
 
-  #---BQ#---
-
+  #---BQ3#---
+BQ3_rolling <- BQ3_chemicals %>% 
+select(sample_date, bq3_ca, bq3_mg, bq3_k, bq3_no3_n, bq3_nh4_n)
   #---MPR---
+MPR_rolling <- MPR_chemicals %>% 
+select(sample_date, mpr_ca, mpr_mg, mpr_k, mpr_no3_n, mpr_nh4_n)
 
-#5. Combine rolling dataframes into one frame. This data frame will have columns sample date and columns for each stream's chemical. 
+#5. Combine rolling data frames into one frame. This data frame will have columns sample date and columns for each stream's chemical. 
+
+streams_join <- full_join(BQ1_rolling,BQ2_rolling) 
+streams_join2 <- full_join(BQ3_rolling, MPR_rolling)
+stream_chemistry <- full_join(streams_join, streams_join2)
+
+  
 
 #6. Plot data
 
   #6a. Plot the Potassium(k) data from all streams. 
+
+ggplot(data = stream_chemistry, aes(x = sample_date, y = bq1_ca))+
+  geom_line()
+
+ggplot(data = stream_chemistry, aes( x = sample_date, y = col=variable)) + 
+  geom_point() + 
+  stat_smooth() +
+  facet_wrap(~variable)
+
   #6b. Plot the No3_n data from all streams. 
   #6c. Plot the Mg data from all streams.
   #6d. Plot the Ca data from all streams.
