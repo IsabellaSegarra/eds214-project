@@ -4,37 +4,49 @@ format: html
 ---
 
 # Background
-A study (Schaefer et al. 2000) investigated the effects of stream water quality in Puerto Rico after the 1989 Hurricane Hugo. They analyzed the level of nutrients over time and found that potassium levels stayed elevated for years afterwards. 
+
+A study (Schaefer et al. 2000) investigated the effects of stream water quality in Puerto Rico after the 1989 Hurricane Hugo. They analyzed the level of nutrients over time and found that potassium levels stayed elevated for years afterwards.
 
 ## Data
 
 ```{r}
 #Load in data from "data" folder. 
 library(here)  #Call data using "here" package. 
+library(tidyverse)
+library(dplyr) # added for select function - install package
+library(here) # added for here function - install package
 
 BQ1 <- read_csv(here::here("data", 
                            "stream-water-pr",
-                           "QuebradaCuenca1-Bisley.csv"))
+                           "QuebradaCuenca1-Bisley.csv")) %>% 
+  clean_names() # need to add this for your next code chunk
 
 BQ2 <- read_csv(here::here("data", 
                            "stream-water-pr",
-                           "QuebradaCuenca2-Bisley.csv"))
+                           "QuebradaCuenca2-Bisley.csv")) %>% 
+    clean_names() # need to add this for your next code chunk
+
 
 BQ3 <- read_csv(here::here("data", 
                            "stream-water-pr",
-                           "QuebradaCuenca3-Bisley.csv"))
+                           "QuebradaCuenca3-Bisley.csv")) %>% 
+    clean_names() # need to add this for your next code chunk
+
 
 MPR <- read_csv(here::here("data", 
                            "stream-water-pr",
-                           "RioMameyesPuenteRoto.csv")) 
+                           "RioMameyesPuenteRoto.csv")) %>% 
+    clean_names() # need to add this for your next code chunk
+
 ```
 
 ## Methods
+
 ```{r}
 #1. Filter data by only relevant chemicals/nutrients in the study. 
 
 BQ1_chemicals <- BQ1 %>%
-  select(sample_date, k, no3_n, mg, ca, nh4_n)
+  select(sample_date, k, no3_n, mg, ca, nh4_n) # 
 
 BQ2_chemicals <- BQ2 %>% 
   select(sample_date, k, no3_n, mg, ca, nh4_n)
@@ -47,7 +59,7 @@ MPR_chemicals <- MPR %>%
 
 #2. Create function to calculate rolling mean. This step was done in the "R/rolling_mean_function.R" r script in the R folder. 
 
-source("R/rolling_mean_function.R")
+source(here("R","rolling_mean_function.R"))
 
 #3. Apply function by each stream data frame. 
 
