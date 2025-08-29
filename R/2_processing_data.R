@@ -50,7 +50,7 @@ streams_longer <- streams %>%
 rolling_avg <- #Store as new data frame called "rolling_avg"
   streams_longer %>% 
   group_by(sample_id, chemical) %>% #Group dataframe by sample_id and chemical
-  mutate(rolling_avg = sapply(sample_date, rolling_mean, dates = sample_date, conc = chem_conc, win_size_wks = 9)) #create new column with the 
+  mutate(rolling_avg = sapply(sample_date, rolling_mean, dates = sample_date, conc = chem_conc, win_size_wks = 9)) 
 
 #Make KableExtra table
 streams_data_table <- rolling_avg %>% 

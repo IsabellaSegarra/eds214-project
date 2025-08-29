@@ -16,7 +16,7 @@ Isabella Segarra (University of California, Santa Barbara- Masters of Environmen
 -   [outputs](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/outputs): Contains the intermediate (e.g. cleaned data) and final dataframes.
 -   [paper](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/paper): Contains the analysis Quarto markdown file.
 -   [R](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/R): Contains the code for cleaning raw data, processing data further, environment installation, functions, and plotting.
--   scratch: This includes scratch files. 
+-   [scratch](https://github.com/IsabellaSegarra/eds214-project/tree/26b7ee0e2a7f9276ef303fb06f5bd2e4ff8d12c5/scratch): This includes scratch files. 
 
 
 ## Flow chart 
@@ -27,7 +27,7 @@ Isabella Segarra (University of California, Santa Barbara- Masters of Environmen
 The data is available through the Environmental Data Initiative <https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-luq.20.4923064> from the USDA Forest Service.
 
 ## How the analysis works
-In order to replicate figure 3 from Schaefer et al. 2000, I first imported the raw data and changed column titles. Following cleaning the data, I filtered the data by stream site and by the time frame of the study. After this process, I joined the stream data into one dataset. The figure visualized stream nutrient concentration ove 
+In order to replicate figure 3 from Schaefer et al. 2000, I first imported the raw data and changed column titles. Following cleaning the data, I filtered the data by stream site and by the time frame of the study. After this process, I joined the stream data into one dataset. The figure visualized the average of stream nutrient concentrations over a 9-week moving time. In order to reflect this in the data, we produced a function that inputs concentration and dates and reflects those in a 9-week rolling mean function. Finally, the data 
 
 
 

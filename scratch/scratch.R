@@ -182,7 +182,7 @@ BQ2_chemicals$rolling_avg <- sapply(
   rolling_mean,
   dates = BQ2_chemicals$sample_date,
   conc = BQ2_chemicals$ca,
-  win_size_wks = 9
+  win_size_wks = 10
 )
 
 
