@@ -24,7 +24,7 @@ rolling_mean <- function(focal_date, dates, conc, win_size_wks) {
   window_conc <- conc[is_in_window]
   
   # Calculate the mean
-  result <- mean(window_conc)
+  result <- mean(window_conc, na.rm = TRUE) #remove NA's from dataset 
   
   return(result)
 }

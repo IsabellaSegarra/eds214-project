@@ -8,18 +8,27 @@ format: html
 A study (Schaefer et al. 2000) investigated the effects of stream water quality in Puerto Rico after the 1989 Hurricane Hugo. They analyzed the level of nutrients over time and found that potassium levels stayed elevated for years afterwards.
 
 ## Data
-Load relevant libraries and source data. 
+
+Load relevant libraries and source data.
+
 ```{r}
+#| echo: false
+
 library(here)
 library(tidyverse)
 library(janitor)
 library(ggplot2)
+library(dplyr)
+library(kableExtra)
 
 source(here("R", "1_clean_data.R"))
+source(here("R", "2_processing_data.R"))
 source(here("R", "rolling_mean_function.R"))
 source(here("R", "ggplot.R"))
 ```
-Import data 
+
+Import data
+
 ```{r}
 bq1 <- read_csv(here::here("data", 
                            "stream-water-pr",
@@ -43,24 +52,62 @@ mpr <- read_csv(here::here("data",
                            "RioMameyesPuenteRoto.csv")) %>% 
   clean_names() 
 ```
+
 # Methods
 
 ## 1. Clean raw data files
-The data cleaning process was as follows:
-1. Loading in raw data. 
-2. Clean names: changing the names from upper case to lower-snake-case. 
-3. Filter data by only relevant chemicals/nutrients in the study.
-4. 
 
-
-## 2. Apply rolling mean function. 
+The data cleaning process was as follows: 1. Loading in raw data. 2. Clean names: changing the names from upper case to lower-snake-case. 3. Filter data by only relevant chemicals/nutrients in the study. 4. Combine dataframes into one. 5. Pivot dataset and remove NAs.
 
 ```{r}
 source(here("R", "1_clean_data.R"))
-streams <- read_csv(here("processed-data", "streams.csv"))
+```
 
-#View(streams_longer) #use KablEextra 
+## 2. Filter data
+
+After the data cleaning process, I further processed the data by filtering data by relevant chemical and filtering by time frame of study.
+
+```{r}
+source(here("R", "2_processing_data.R"))
+```
+
+## 3. Join datasets
+
+After filtering, I combined datasets and applied the rolling mean function.
+
+```{r}
+streams <- rbind(bq1_chemicals, bq2_chemicals, bq3_chemicals, mpr_chemicals)
+```
+
+Apply rolling mean function.
+
+```{r}
+source(here("R", "1_clean_data.R"))
+source(here("R", "2_processing_data.R"))
+streams <- read_csv(here("outputs", "streams.csv"))
+
+source(here("R", "rolling_mean_function.R"))
+
+rolling_avg <- #Store as new data frame called "rolling_avg"
+  streams_longer %>% 
+  group_by(sample_id, chemical) %>% #Group dataframe by sample_id and chemical
+  mutate(rolling_avg = sapply(sample_date, rolling_mean, dates = sample_date, conc = chem_conc, win_size_wks = 9)) 
 
 ```
 
+View data
+
+```{r}
+streams_data_table <- rolling_avg %>% 
+kable(col.names = c("sample ID", "date", "chemical", "chemical concentration", 
+                    "rolling average")) %>% 
+  kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
+kable_classic() %>%
+  scroll_box(height = "300px", width = "700px")
+```
+
 ## Results
+```{r}
+
+```
+

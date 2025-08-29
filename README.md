@@ -14,8 +14,12 @@ Isabella Segarra (University of California, Santa Barbara- Masters of Environmen
 -   R: Contains the code for procesing the raw data files, environment   installation, and functions.
 -   paper: Contains the analysis Quarto markdown file.
 -   outputs: Contains the intermediate and final outputs.
+-   figs: Contains the final data visualizations. 
 -   scratch: This includes data exploration file.
 -   docs: Contains the Quarto doc. 
+
+## Flow chart 
+
 
 ## How to access data
 
