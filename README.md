@@ -19,7 +19,7 @@ Isabella Segarra (University of California, Santa Barbara- Masters of Environmen
 -   docs: Contains the Quarto doc. 
 
 ## Flow chart 
-![flowchart.](figs/Flowchart.png)
+![flowchart.](figs/Flowchart.png){width=50%}
 
 ## How to access data
 
