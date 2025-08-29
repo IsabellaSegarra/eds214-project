@@ -103,13 +103,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>A study (Schaefer et al.&nbsp;2000) investigated the effects of stream water quality in five streams in Puerto Rico after the 1989 Hurricane Hugo. They analyzed the level of nutrients over time and found that potassium levels stayed elevated for years afterwards.</p>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>Load relevant libraries and source data.</p>
+<p>Load relevant libraries.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"1_clean_data.R"</span>))</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"2_processing_data.R"</span>))</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"rolling_mean_function.R"</span>))</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"ggplot.R"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Import the data.</p>
 <div class="cell">
@@ -143,70 +141,149 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="clean-raw-data-files">1. Clean raw data files</h2>
 <p>The data cleaning process was as follows: 1. Loading in raw data. 2. Clean names: changing the names from upper case to lower-snake-case. 3. Filter data by only relevant chemicals/nutrients in the study. 4. Combine dataframes into one. 5. Pivot dataset and remove NAs.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(bq1, <span class="fu">here</span>(<span class="st">"outputs"</span>, <span class="st">"bq1_clean.csv"</span>))</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(bq2, <span class="fu">here</span>(<span class="st">"outputs"</span>, <span class="st">"bq2_clean.csv"</span>))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(bq3, <span class="fu">here</span>(<span class="st">"outputs"</span>, <span class="st">"bq3_clean.csv"</span>))</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(mpr, <span class="fu">here</span>(<span class="st">"outputs"</span>, <span class="st">"mpr_clean.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"outputs"</span>, <span class="st">"bq1_clean.csv"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,847 × 39
+   sample_id      code sample_date sample_time gage_ht  temp   p_h  cond    cl
+   &lt;chr&gt;         &lt;dbl&gt; &lt;date&gt;            &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 Q1        100012001 1986-05-20           NA      NA    NA  7.35  90.1   8.2
+ 2 Q1        100012002 1986-05-27           NA      NA    NA  7.48  85.4  NA  
+ 3 Q1        100012003 1986-06-03           NA      NA    NA  7.36  85.4  NA  
+ 4 Q1        100012004 1986-10-21         1302      NA    24  7.39  88.5   8.7
+ 5 Q1        100012005 1986-10-28         1124      NA    23  7.34  91.4   8.5
+ 6 Q1        100012006 1986-11-04         1150      NA    23  7.45  87.7   8.5
+ 7 Q1        100012007 1986-11-10         1030      NA    22  7.36  74.8   7.8
+ 8 Q1        100012008 1986-11-18          859      NA    22  7.36  83     8.5
+ 9 Q1        100012009 1986-11-25          840      NA    22  7.15  43.9   6.4
+10 Q1        100012010 1986-12-02          925      NA    22  7.25  80.5   8.4
+# ℹ 1,837 more rows
+# ℹ 30 more variables: no3_n &lt;dbl&gt;, so4_s &lt;dbl&gt;, na &lt;dbl&gt;, k &lt;dbl&gt;, mg &lt;dbl&gt;,
+#   ca &lt;dbl&gt;, nh4_n &lt;dbl&gt;, po4_p &lt;dbl&gt;, doc &lt;dbl&gt;, dic &lt;dbl&gt;, tdn &lt;dbl&gt;,
+#   tdp &lt;lgl&gt;, si_o2 &lt;dbl&gt;, don &lt;dbl&gt;, chloride_code &lt;lgl&gt;, nitrate_code &lt;chr&gt;,
+#   sulfate_code &lt;chr&gt;, sodium_code &lt;lgl&gt;, potassium_code &lt;lgl&gt;,
+#   magnesium_code &lt;lgl&gt;, calcium_code &lt;lgl&gt;, nh4code &lt;chr&gt;, po4code &lt;chr&gt;,
+#   doc_code &lt;chr&gt;, dic_code &lt;lgl&gt;, tdn_code &lt;chr&gt;, si_o2code &lt;lgl&gt;, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"outputs"</span>, <span class="st">"bq2_clean.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,838 × 39
+   sample_id      code sample_date sample_time gage_ht  temp   p_h  cond    cl
+   &lt;chr&gt;         &lt;dbl&gt; &lt;date&gt;            &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 Q2        100013001 1986-05-20           NA      NA  NA    7.52  90.2   7.3
+ 2 Q2        100013002 1986-05-27           NA      NA  NA    7.59  84.4  NA  
+ 3 Q2        100013003 1986-06-03           NA      NA  NA    7.55  83.3  NA  
+ 4 Q2        100013004 1986-10-21         1310      NA  24    7.42  84.8   7.3
+ 5 Q2        100013005 1986-10-28         1136      NA  23    7.39  85     7.3
+ 6 Q2        100013006 1986-11-04         1100      NA  22.5  7.43  84.2   7.3
+ 7 Q2        100013007 1986-11-10         1023      NA  23    7.35  73.8   6.9
+ 8 Q2        100013008 1986-11-18          851      NA  22    7.51  80.8   7  
+ 9 Q2        100013009 1986-11-25          845      NA  22    7.19  50.3   6.2
+10 Q2        100013010 1986-12-02          933      NA  22    7.41  84.4   7  
+# ℹ 1,828 more rows
+# ℹ 30 more variables: no3_n &lt;dbl&gt;, so4_s &lt;dbl&gt;, na &lt;dbl&gt;, k &lt;dbl&gt;, mg &lt;dbl&gt;,
+#   ca &lt;dbl&gt;, nh4_n &lt;dbl&gt;, po4_p &lt;dbl&gt;, doc &lt;dbl&gt;, dic &lt;dbl&gt;, tdn &lt;dbl&gt;,
+#   tdp &lt;lgl&gt;, si_o2 &lt;dbl&gt;, don &lt;dbl&gt;, chloride_code &lt;lgl&gt;, nitrate_code &lt;chr&gt;,
+#   sulfate_code &lt;chr&gt;, sodium_code &lt;lgl&gt;, potassium_code &lt;chr&gt;,
+#   magnesium_code &lt;lgl&gt;, calcium_code &lt;lgl&gt;, nh4code &lt;chr&gt;, po4code &lt;chr&gt;,
+#   doc_code &lt;chr&gt;, dic_code &lt;lgl&gt;, tdn_code &lt;chr&gt;, si_o2code &lt;lgl&gt;, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"outputs"</span>, <span class="st">"bq3_clean.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,835 × 39
+   sample_id      code sample_date sample_time gage_ht  temp   p_h  cond    cl
+   &lt;chr&gt;         &lt;dbl&gt; &lt;date&gt;            &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 Q3        100014001 1986-05-20           NA      NA  NA    7.44  85.1   8.3
+ 2 Q3        100014002 1986-05-27           NA      NA  NA    7.53  81.1  NA  
+ 3 Q3        100014003 1986-06-03           NA      NA  NA    7.49  80.3  NA  
+ 4 Q3        100014004 1986-10-21         1250      NA  23.5  7.11  78.5   6.9
+ 5 Q3        100014005 1986-10-28         1145      NA  23    7.42  80.3   7.9
+ 6 Q3        100014006 1986-11-04         1050      NA  23    7.46  79.4   8.2
+ 7 Q3        100014007 1986-11-10         1013      NA  22    7.11  60.9   7.1
+ 8 Q3        100014008 1986-11-18          840      NA  22    7.56  74     8.1
+ 9 Q3        100014009 1986-11-25          852      NA  21.5  7.27  50.3   6.9
+10 Q3        100014010 1986-12-02          937      NA  22    7.49  70.6   7.4
+# ℹ 1,825 more rows
+# ℹ 30 more variables: no3_n &lt;dbl&gt;, so4_s &lt;dbl&gt;, na &lt;dbl&gt;, k &lt;dbl&gt;, mg &lt;dbl&gt;,
+#   ca &lt;dbl&gt;, nh4_n &lt;dbl&gt;, po4_p &lt;dbl&gt;, doc &lt;dbl&gt;, dic &lt;dbl&gt;, tdn &lt;dbl&gt;,
+#   tdp &lt;lgl&gt;, si_o2 &lt;dbl&gt;, don &lt;dbl&gt;, chloride_code &lt;lgl&gt;, nitrate_code &lt;chr&gt;,
+#   sulfate_code &lt;chr&gt;, sodium_code &lt;lgl&gt;, potassium_code &lt;lgl&gt;,
+#   magnesium_code &lt;lgl&gt;, calcium_code &lt;lgl&gt;, nh4code &lt;chr&gt;, po4code &lt;chr&gt;,
+#   doc_code &lt;chr&gt;, dic_code &lt;lgl&gt;, tdn_code &lt;chr&gt;, si_o2code &lt;chr&gt;, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"outputs"</span>, <span class="st">"mpr_clean.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,657 × 39
+   sample_id  code sample_date sample_time gage_ht  temp   p_h  cond    cl no3_n
+   &lt;chr&gt;     &lt;dbl&gt; &lt;date&gt;            &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 MPR        1526 1989-05-16          933    1.78    NA  7.08 108      NA    69
+ 2 MPR        1539 1989-05-23         1005    1.9     NA  7.45  92.8    NA    69
+ 3 MPR        1570 1989-05-30         1034    2.76    NA  7.19  68.6    NA    79
+ 4 MPR        1582 1989-06-06         1110    2.42    NA  7.54  72.6    NA    85
+ 5 MPR        1599 1989-06-13         1000    2.13    NA  7.34  85      NA    70
+ 6 MPR        1657 1989-06-20         1010    2.18    NA  7.67  81.3    NA    71
+ 7 MPR        1687 1989-06-27          957    1.83    NA  7.47  84.7    NA    NA
+ 8 MPR        1697 1989-07-05           NA   NA       NA  6.94  39.2    NA    10
+ 9 MPR        1986 1989-07-11         1032    1.64    NA  7.33  76.3    NA    24
+10 MPR        2063 1989-07-26           NA   NA       NA  7.17  69.5    NA    10
+# ℹ 1,647 more rows
+# ℹ 29 more variables: so4_s &lt;dbl&gt;, na &lt;dbl&gt;, k &lt;dbl&gt;, mg &lt;dbl&gt;, ca &lt;dbl&gt;,
+#   nh4_n &lt;dbl&gt;, po4_p &lt;dbl&gt;, doc &lt;dbl&gt;, dic &lt;dbl&gt;, tdn &lt;dbl&gt;, tdp &lt;lgl&gt;,
+#   si_o2 &lt;dbl&gt;, don &lt;dbl&gt;, chloride_code &lt;lgl&gt;, nitrate_code &lt;chr&gt;,
+#   sulfate_code &lt;chr&gt;, sodium_code &lt;lgl&gt;, potassium_code &lt;lgl&gt;,
+#   magnesium_code &lt;lgl&gt;, calcium_code &lt;lgl&gt;, nh4code &lt;chr&gt;, po4code &lt;chr&gt;,
+#   doc_code &lt;lgl&gt;, dic_code &lt;lgl&gt;, tdn_code &lt;chr&gt;, si_o2code &lt;chr&gt;, …</code></pre>
+</div>
 </div>
 </section>
 <section id="filter-data" class="level2">
 <h2 class="anchored" data-anchor-id="filter-data">2. Filter data</h2>
 <p>After the data cleaning process, I further processed the data by filtering data by relevant chemical and filtering by time frame of study (1988-1994) and pivotted the data frame.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"2_processing_data.R"</span>))</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter data by only relevant chemicals/nutrients in the study (k, no3_n, mg, ca, nh4_n). </span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>bq1_chemicals <span class="ot">&lt;-</span> bq1 <span class="sc">%&gt;%</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sample_id,sample_date, k, no3_n, mg, ca, nh4_n)  </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>bq2_chemicals <span class="ot">&lt;-</span> bq2 <span class="sc">%&gt;%</span> </span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>bq3_chemicals <span class="ot">&lt;-</span> bq3 <span class="sc">%&gt;%</span> </span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>mpr_chemicals <span class="ot">&lt;-</span> mpr <span class="sc">%&gt;%</span> </span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a> <span class="co"># Filter stream data to reflect the study time frame from 1988 to 1994. </span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>streams <span class="ot">&lt;-</span> streams <span class="sc">%&gt;%</span> </span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>((sample_date <span class="sc">&gt;=</span> <span class="st">"1988-01-10"</span> <span class="sc">&amp;</span> sample_date <span class="sc">&lt;</span> <span class="st">"1994-07-31"</span>))</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Pivot dataset from wider to longer. </span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>streams_longer <span class="ot">&lt;-</span> streams <span class="sc">%&gt;%</span>  </span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(k, mg, ca, nh4_n, no3_n), <span class="at">names_to =</span> <span class="st">"chemical"</span>, </span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"chem_conc"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"2_processing_data.R"</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter data by only relevant chemicals/nutrients in the study (k, no3_n, mg, ca, nh4_n). </span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#My filter data includes subsets like this one for every stream (bqq1,bq2,bq3,mpr). </span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>bq1_chemicals <span class="ot">&lt;-</span> bq1 <span class="sc">%&gt;%</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sample_id,sample_date, k, no3_n, mg, ca, nh4_n)  </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter stream data to reflect the study time frame from 1988 to 1994. </span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>streams <span class="ot">&lt;-</span> streams <span class="sc">%&gt;%</span> </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>((sample_date <span class="sc">&gt;=</span> <span class="st">"1988-01-10"</span> <span class="sc">&amp;</span> sample_date <span class="sc">&lt;</span> <span class="st">"1994-07-31"</span>))</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Pivot dataset from wider to longer. </span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>streams_longer <span class="ot">&lt;-</span> streams <span class="sc">%&gt;%</span>  </span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(k, mg, ca, nh4_n, no3_n), <span class="at">names_to =</span> <span class="st">"chemical"</span>, </span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"chem_conc"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="join-datasets" class="level2">
 <h2 class="anchored" data-anchor-id="join-datasets">3. Join datasets</h2>
 <p>After filtering, I combined datasets.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>streams <span class="ot">&lt;-</span> <span class="fu">rbind</span>(bq1_chemicals, bq2_chemicals, bq3_chemicals, mpr_chemicals)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>streams <span class="ot">&lt;-</span> <span class="fu">rbind</span>(bq1_chemicals, bq2_chemicals, bq3_chemicals, mpr_chemicals)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>streams <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"outputs"</span>, <span class="st">"streams.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Apply rolling mean function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"1_clean_data.R"</span>))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"2_processing_data.R"</span>))</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>streams <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"outputs"</span>, <span class="st">"streams.csv"</span>))</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"rolling_mean_function.R"</span>))</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>rolling_avg <span class="ot">&lt;-</span> <span class="co">#Store as new data frame called "rolling_avg"</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  streams_longer <span class="sc">%&gt;%</span> </span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sample_id, chemical) <span class="sc">%&gt;%</span> <span class="co">#Group dataframe by sample_id and chemical</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rolling_avg =</span> <span class="fu">sapply</span>(sample_date, rolling_mean, <span class="at">dates =</span> sample_date, <span class="at">conc =</span> chem_conc, <span class="at">win_size_wks =</span> <span class="dv">9</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R"</span>,<span class="st">"rolling_mean_function.R"</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>rolling_avg <span class="ot">&lt;-</span> <span class="co">#Store as new data frame called "rolling_avg"</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  streams_longer <span class="sc">%&gt;%</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sample_id, chemical) <span class="sc">%&gt;%</span> <span class="co">#Group dataframe by sample_id and chemical</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rolling_avg =</span> <span class="fu">sapply</span>(sample_date, rolling_mean, <span class="at">dates =</span> sample_date, <span class="at">conc =</span> chem_conc, <span class="at">win_size_wks =</span> <span class="dv">9</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>View data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rolling_avg <span class="sc">%&gt;%</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"sample ID"</span>, <span class="st">"date"</span>, <span class="st">"chemical"</span>, <span class="st">"chemical concentration"</span>, </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"rolling average"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, <span class="at">full_width =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable_classic</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scroll_box</span>(<span class="at">height =</span> <span class="st">"300px"</span>, <span class="at">width =</span> <span class="st">"700px"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rolling_avg <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"sample ID"</span>, <span class="st">"date"</span>, <span class="st">"chemical"</span>, <span class="st">"chemical concentration"</span>, </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"rolling average"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, <span class="at">full_width =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable_classic</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scroll_box</span>(<span class="at">height =</span> <span class="st">"300px"</span>, <span class="at">width =</span> <span class="st">"700px"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:700px; ">
 <table class="table table-striped lightable-classic caption-top table-sm small" data-quarto-postprocess="true">
@@ -14231,22 +14308,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <p>Plot results.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Plot</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>stream_chemistry_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> rolling_avg, <span class="fu">aes</span>(<span class="at">x =</span> sample_date, <span class="at">y =</span> rolling_avg)) <span class="sc">+</span> </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> sample_id)) <span class="sc">+</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>chemical, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">nrow =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#add line for hurricane Hugo disturbance </span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">as.Date</span>(<span class="st">"1989-09-18"</span>), <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> </span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>( <span class="at">x =</span> <span class="st">"Years"</span>, </span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">"Concentration"</span>, </span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Hurricane Effects on Stream Chemistry"</span>) <span class="sc">+</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.title =</span> <span class="fu">element_blank</span>()) </span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>stream_chemistry_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Plot</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>stream_chemistry_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> rolling_avg, <span class="fu">aes</span>(<span class="at">x =</span> sample_date, <span class="at">y =</span> rolling_avg)) <span class="sc">+</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> sample_id)) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>chemical, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">nrow =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#add line for hurricane Hugo disturbance </span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">as.Date</span>(<span class="st">"1989-09-18"</span>), <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>( <span class="at">x =</span> <span class="st">"Years"</span>, </span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">"Concentration"</span>, </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Hurricane Effects on Stream Chemistry"</span>) <span class="sc">+</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.title =</span> <span class="fu">element_blank</span>()) </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>stream_chemistry_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

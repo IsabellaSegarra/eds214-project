@@ -13,14 +13,12 @@ A study (Schaefer et al. 2000) investigated the effects of stream water quality 
 
 ## Data
 
-Load relevant libraries and source data.
+Load relevant libraries.
 
 ```{r}
 library(here)
-source(here("1_clean_data.R"))
-source(here("2_processing_data.R"))
-source(here("R","rolling_mean_function.R"))
-source(here("3_ggplot.R"))
+library(tidyverse)
+library(janitor)
 ```
 
 Import the data.
@@ -53,13 +51,13 @@ mpr <- read_csv(here::here("data",
 
 ## 1. Clean raw data files
 
-The data cleaning process was as follows: 1. Loading in raw data. 2. Clean names: changing the names from upper case to lower-snake-case. 3. Filter data by only relevant chemicals/nutrients in the study. 4. Combine dataframes into one. 5. Pivot dataset and remove NAs.
+The data cleaning process was as follows: 1. Loading in raw data. 2. Clean names: changing the names from upper case to lower-snake-case. 3. Filter data by only relevant chemicals/nutrients in the study. 4. Combine data frames into one. 5. Pivot dataset and remove NAs.
 
 ```{r}
-write_csv(bq1, here("outputs", "bq1_clean.csv"))
-write_csv(bq2, here("outputs", "bq2_clean.csv"))
-write_csv(bq3, here("outputs", "bq3_clean.csv"))
-write_csv(mpr, here("outputs", "mpr_clean.csv"))
+read_csv(here("outputs", "bq1_clean.csv")) 
+read_csv(here("outputs", "bq2_clean.csv"))
+read_csv(here("outputs", "bq3_clean.csv"))
+read_csv(here("outputs", "mpr_clean.csv"))
 ```
 
 ## 2. Filter data
@@ -67,27 +65,21 @@ write_csv(mpr, here("outputs", "mpr_clean.csv"))
 After the data cleaning process, I further processed the data by filtering data by relevant chemical and filtering by time frame of study (1988-1994) and pivotted the data frame.
 
 ```{r}
-source(here("R", "2_processing_data.R"))
+source(here("2_processing_data.R"))
 
 # Filter data by only relevant chemicals/nutrients in the study (k, no3_n, mg, ca, nh4_n). 
+
+  #My filter data includes subsets like this one for every stream (bqq1,bq2,bq3,mpr). 
 
 bq1_chemicals <- bq1 %>%
   select(sample_id,sample_date, k, no3_n, mg, ca, nh4_n)  
 
-bq2_chemicals <- bq2 %>% 
-  select(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)
 
-bq3_chemicals <- bq3 %>% 
-  select(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)
-
-mpr_chemicals <- mpr %>% 
-  select(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)
-
- # Filter stream data to reflect the study time frame from 1988 to 1994. 
+# Filter stream data to reflect the study time frame from 1988 to 1994. 
 streams <- streams %>% 
   filter((sample_date >= "1988-01-10" & sample_date < "1994-07-31"))
 
-  # Pivot dataset from wider to longer. 
+# Pivot dataset from wider to longer. 
 streams_longer <- streams %>%  
   pivot_longer(cols = c(k, mg, ca, nh4_n, no3_n), names_to = "chemical", 
                values_to = "chem_conc") 
@@ -99,17 +91,14 @@ streams_longer <- streams %>%
 After filtering, I combined datasets.
 
 ```{r}
-streams <- rbind(bq1_chemicals, bq2_chemicals, bq3_chemicals, mpr_chemicals)
+#View dataset here 
+streams <- read_csv(here("outputs", "streams.csv"))
 ```
 
 Apply rolling mean function.
 
 ```{r}
-source(here("R", "1_clean_data.R"))
-source(here("R", "2_processing_data.R"))
-streams <- read_csv(here("outputs", "streams.csv"))
-
-source(here("R", "rolling_mean_function.R"))
+source(here("R","rolling_mean_function.R"))
 
 rolling_avg <- #Store as new data frame called "rolling_avg"
   streams_longer %>% 
