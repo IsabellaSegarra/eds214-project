@@ -1,0 +1,18 @@
+#................Environment Installation................
+# This R script is for downloading and loading the relevant packages for the analysis.   
+
+#Run this in console:
+install.packages("here")
+install.packages("tidyverse")
+install.packages("janitor")
+install.packages("ggplot2")
+install.packages("dplyr")
+install.packages("kableExtra")
+
+#Load packages 
+library(here)
+library(tidyverse)
+library(janitor)
+library(ggplot2)
+library(dplyr)
+library(kableExtra)

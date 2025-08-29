@@ -11,7 +11,7 @@ library(dplyr)
 library(kableExtra)
 
   #Source cleaned data
-source(here("R", "1_clean_data.R"))
+source(here("1_clean_data.R"))
 
 #---Further process data---
 

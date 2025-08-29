@@ -17,10 +17,10 @@ Load relevant libraries and source data.
 
 ```{r}
 library(here)
-source(here("R", "1_clean_data.R"))
-source(here("R", "2_processing_data.R"))
+source(here("1_clean_data.R"))
+source(here("2_processing_data.R"))
 source(here("R", "rolling_mean_function.R"))
-source(here("R", "ggplot.R"))
+source(here("3_ggplot.R"))
 ```
 
 Import the data.

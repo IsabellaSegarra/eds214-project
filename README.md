@@ -15,12 +15,16 @@ Isabella Segarra (University of California, Santa Barbara- Masters of Environmen
 -   [figs](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/figs): Contains the final data visualization and flowchart.
 -   [outputs](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/outputs): Contains the intermediate (e.g. cleaned data) and final dataframes.
 -   [paper](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/paper): Contains the analysis Quarto markdown file.
--   [R](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/R): Contains the code for cleaning raw data, processing data further, environment installation, functions, and plotting.
+-   [R](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/R): 
+- 0_environment_installation.R: Contains the installation of relevant packages for running the code in this project. If running a new session, run this script first. 
+- 1_clean_data.R: Contains the cleaned data. 
+- 2_processing_data.R: Contains the proceeding step in the analysis.
+- 3_ggplot.R: Contains the code for graphing figure 3. 
 -   [scratch](https://github.com/IsabellaSegarra/eds214-project/tree/26b7ee0e2a7f9276ef303fb06f5bd2e4ff8d12c5/scratch): This includes scratch files. 
 
 
 ## Flow chart 
-![flowchart.](figs/Flowchart.png){width=20%}
+![flowchart.](figs/Flowchart.png)
 
 ## How to access data
 
