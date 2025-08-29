@@ -16,6 +16,7 @@ A study (Schaefer et al. 2000) investigated the effects of stream water quality 
 Load relevant libraries and source data.
 
 ```{r}
+librar(here)
 source(here("R", "1_clean_data.R"))
 source(here("R", "2_processing_data.R"))
 source(here("R", "rolling_mean_function.R"))

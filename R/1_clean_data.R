@@ -36,7 +36,7 @@ mpr <- read_csv(here::here("data",
                            "RioMameyesPuenteRoto.csv")) %>% 
   clean_names() 
 
-#---export cleaned datasets---
+#---export cleaned datasets into the outputs folder---
 write_csv(bq1, here("outputs", "bq1_clean.csv"))
 write_csv(bq2, here("outputs", "bq2_clean.csv"))
 write_csv(bq3, here("outputs", "bq3_clean.csv"))
