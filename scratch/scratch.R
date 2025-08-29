@@ -189,7 +189,7 @@ BQ2_chemicals$rolling_avg <- sapply(
 
 
 #Combine dataframes into new dataset ###
-streams <- rbind(BQ1_chemicals, BQ2_chemicals, BQ3_chemicals, MPR_chemicals)
+streams <- rbind(sample_id,BQ1_chemicals, BQ2_chemicals, BQ3_chemicals, MPR_chemicals)
 
 streams_longer <- streams %>%  
   pivot_longer(names_from = ,
@@ -231,7 +231,224 @@ if (condition) {
     return(result) # Return a value if desired
   }
 
-
+---
+    
+{
+      #3. Apply function by each stream data frame. 
+      
+      #---BQ1---
+      #Ca
+      BQ1_chemicals$bq1_ca <- sapply(
+        BQ1_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ1_chemicals$sample_date,
+        conc = BQ1_chemicals$ca,
+        win_size_wks = 9
+      )
+      #Mg
+      BQ1_chemicals$bq1_mg <- sapply(
+        BQ1_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ1_chemicals$sample_date,
+        conc = BQ1_chemicals$mg,
+        win_size_wks = 9
+      )
+      #k
+      BQ1_chemicals$bq1_k <- sapply(
+        BQ1_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ1_chemicals$sample_date,
+        conc = BQ1_chemicals$k,
+        win_size_wks = 9
+      )
+      #no3_n
+      BQ1_chemicals$bq1_no3_n <- sapply(
+        BQ1_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ1_chemicals$sample_date,
+        conc = BQ1_chemicals$no3_n,
+        win_size_wks = 9
+      )
+      
+      #nh4_n
+      BQ1_chemicals$bq1_nh4_n <- sapply(
+        BQ1_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ1_chemicals$sample_date,
+        conc = BQ1_chemicals$nh4_n,
+        win_size_wks = 9
+      )
+      #---BQ2---
+      
+      #Ca
+      BQ2_chemicals$bq2_ca <- sapply(
+        BQ2_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ2_chemicals$sample_date,
+        conc = BQ2_chemicals$ca,
+        win_size_wks = 9
+      )
+      #Mg
+      BQ2_chemicals$bq2_mg <- sapply(
+        BQ2_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ2_chemicals$sample_date,
+        conc = BQ2_chemicals$mg,
+        win_size_wks = 9
+      )
+      #k
+      BQ2_chemicals$bq2_k <- sapply(
+        BQ2_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ2_chemicals$sample_date,
+        conc = BQ2_chemicals$k,
+        win_size_wks = 9
+      )
+      #no3_n
+      BQ2_chemicals$bq2_no3_n <- sapply(
+        BQ2_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ2_chemicals$sample_date,
+        conc = BQ2_chemicals$no3_n,
+        win_size_wks = 9
+      )
+      
+      #nh4_n
+      BQ2_chemicals$bq2_nh4_n <- sapply(
+        BQ2_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ2_chemicals$sample_date,
+        conc = BQ2_chemicals$nh4_n,
+        win_size_wks = 9
+      )
+      
+      #---BQ3---
+      #Ca
+      BQ3_chemicals$bq3_ca <- sapply(
+        BQ3_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ3_chemicals$sample_date,
+        conc = BQ3_chemicals$ca,
+        win_size_wks = 9
+      )
+      #Mg
+      BQ3_chemicals$bq3_mg <- sapply(
+        BQ3_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ3_chemicals$sample_date,
+        conc = BQ3_chemicals$mg,
+        win_size_wks = 9
+      )
+      #k
+      BQ3_chemicals$bq3_k <- sapply(
+        BQ3_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ3_chemicals$sample_date,
+        conc = BQ3_chemicals$k,
+        win_size_wks = 9
+      )
+      #no3_n
+      BQ3_chemicals$bq3_no3_n <- sapply(
+        BQ3_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ3_chemicals$sample_date,
+        conc = BQ3_chemicals$no3_n,
+        win_size_wks = 9
+      )
+      
+      #nh4_n
+      BQ3_chemicals$bq3_nh4_n <- sapply(
+        BQ3_chemicals$sample_date,
+        rolling_mean,
+        dates = BQ3_chemicals$sample_date,
+        conc = BQ3_chemicals$nh4_n,
+        win_size_wks = 9
+      )
+      #---MPR---
+      #Ca
+      MPR_chemicals$mpr_ca <- sapply(
+        MPR_chemicals$sample_date,
+        rolling_mean,
+        dates = MPR_chemicals$sample_date,
+        conc = MPR_chemicals$ca,
+        win_size_wks = 9
+      )
+      #Mg
+      MPR_chemicals$mpr_mg <- sapply(
+        MPR_chemicals$sample_date,
+        rolling_mean,
+        dates = MPR_chemicals$sample_date,
+        conc = MPR_chemicals$mg,
+        win_size_wks = 9
+      )
+      #k
+      MPR_chemicals$mpr_k <- sapply(
+        MPR_chemicals$sample_date,
+        rolling_mean,
+        dates = MPR_chemicals$sample_date,
+        conc = MPR_chemicals$k,
+        win_size_wks = 9
+      )
+      #no3_n
+      MPR_chemicals$mpr_no3_n <- sapply(
+        MPR_chemicals$sample_date,
+        rolling_mean,
+        dates = MPR_chemicals$sample_date,
+        conc = MPR_chemicals$no3_n,
+        win_size_wks = 9
+      )
+      
+      #nh4_n
+      MPR_chemicals$mpr_nh4_n <- sapply(
+        MPR_chemicals$sample_date,
+        rolling_mean,
+        dates = MPR_chemicals$sample_date,
+        conc = MPR_chemicals$nh4_n,
+        win_size_wks = 9
+      )
+      
+      #4. Put rolling average data into new data frames
+      #---BQ1---
+      BQ1_rolling <- BQ1_chemicals %>% 
+        select(sample_date, bq1_ca, bq1_mg, bq1_k, bq1_no3_n, bq1_nh4_n)
+      
+      #---BQ2--
+      BQ2_rolling <- BQ2_chemicals %>% 
+        select(sample_date, bq2_ca, bq2_mg, bq2_k, bq2_no3_n, bq2_nh4_n)
+      
+      #---BQ3#---
+      BQ3_rolling <- BQ3_chemicals %>% 
+        select(sample_date, bq3_ca, bq3_mg, bq3_k, bq3_no3_n, bq3_nh4_n)
+      #---MPR---
+      MPR_rolling <- MPR_chemicals %>% 
+        select(sample_date, mpr_ca, mpr_mg, mpr_k, mpr_no3_n, mpr_nh4_n)
+      
+      #5. Combine rolling data frames into one frame. This data frame will have columns sample date and columns for each stream's chemical. 
+      
+      streams_join <- full_join(BQ1_rolling,BQ2_rolling) 
+      streams_join2 <- full_join(BQ3_rolling, MPR_rolling)
+      stream_chemistry <- full_join(streams_join, streams_join2)
+      
+      
+      
+      #6. Plot data
+      
+      #6a. Plot the Potassium(k) data from all streams. 
+      
+      ggplot(data = stream_chemistry, aes(x = sample_date, y = bq1_ca))+
+        geom_line()
+      
+      ggplot(data = stream_chemistry, aes( x = sample_date, y = col=variable)) + 
+        geom_point() + 
+        stat_smooth() +
+        facet_wrap(~variable)
+      
+      #6b. Plot the No3_n data from all streams. 
+      #6c. Plot the Mg data from all streams.
+      #6d. Plot the Ca data from all streams.
+      #6e. Plot the Nh4_n data from all streams. 
+    }
+  
 
 
 

@@ -1,5 +1,5 @@
 ---
-title: "paper"
+title: "Hurricane Effects on Stream Chemistry"
 format: html
 ---
 
@@ -8,273 +8,58 @@ format: html
 A study (Schaefer et al. 2000) investigated the effects of stream water quality in Puerto Rico after the 1989 Hurricane Hugo. They analyzed the level of nutrients over time and found that potassium levels stayed elevated for years afterwards.
 
 ## Data
-
+Load relevant libraries and source data. 
 ```{r}
-#Load in data from "data" folder. 
-library(here)  #Call data using "here" package. 
+library(here)
 library(tidyverse)
-library(dplyr) # added for select function - install package
-library(here) # added for here function - install package
+library(janitor)
+library(ggplot2)
 
-BQ1 <- read_csv(here::here("data", 
+source(here("R", "1_clean_data.R"))
+source(here("R", "rolling_mean_function.R"))
+source(here("R", "ggplot.R"))
+```
+Import data 
+```{r}
+bq1 <- read_csv(here::here("data", 
                            "stream-water-pr",
                            "QuebradaCuenca1-Bisley.csv")) %>% 
-  clean_names() # need to add this for your next code chunk
+  clean_names() 
 
-BQ2 <- read_csv(here::here("data", 
+bq2 <- read_csv(here::here("data", 
                            "stream-water-pr",
                            "QuebradaCuenca2-Bisley.csv")) %>% 
-    clean_names() # need to add this for your next code chunk
+  clean_names()
 
 
-BQ3 <- read_csv(here::here("data", 
+bq3 <- read_csv(here::here("data", 
                            "stream-water-pr",
                            "QuebradaCuenca3-Bisley.csv")) %>% 
-    clean_names() # need to add this for your next code chunk
+  clean_names() 
 
 
-MPR <- read_csv(here::here("data", 
+mpr <- read_csv(here::here("data", 
                            "stream-water-pr",
                            "RioMameyesPuenteRoto.csv")) %>% 
-    clean_names() # need to add this for your next code chunk
-
+  clean_names() 
 ```
+# Methods
 
-## Methods
+## 1. Clean raw data files
+The data cleaning process was as follows:
+1. Loading in raw data. 
+2. Clean names: changing the names from upper case to lower-snake-case. 
+3. Filter data by only relevant chemicals/nutrients in the study.
+4. 
+
+
+## 2. Apply rolling mean function. 
 
 ```{r}
-#1. Filter data by only relevant chemicals/nutrients in the study. 
+source(here("R", "1_clean_data.R"))
+streams <- read_csv(here("processed-data", "streams.csv"))
 
-BQ1_chemicals <- BQ1 %>%
-  select(sample_date, k, no3_n, mg, ca, nh4_n) # 
-
-BQ2_chemicals <- BQ2 %>% 
-  select(sample_date, k, no3_n, mg, ca, nh4_n)
-
-BQ3_chemicals <- BQ2 %>% 
-  select(sample_date, k, no3_n, mg, ca, nh4_n)
-
-MPR_chemicals <- MPR %>% 
-  select(sample_date, k, no3_n, mg, ca, nh4_n)
-
-#2. Create function to calculate rolling mean. This step was done in the "R/rolling_mean_function.R" r script in the R folder. 
-
-source(here("R","rolling_mean_function.R"))
-
-#3. Apply function by each stream data frame. 
-
-#---BQ1---
-  #Ca
-BQ1_chemicals$bq1_ca <- sapply(
-  BQ1_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ1_chemicals$sample_date,
-  conc = BQ1_chemicals$ca,
-  win_size_wks = 9
-)
-  #Mg
-BQ1_chemicals$bq1_mg <- sapply(
-  BQ1_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ1_chemicals$sample_date,
-  conc = BQ1_chemicals$mg,
-  win_size_wks = 9
-)
-  #k
-BQ1_chemicals$bq1_k <- sapply(
-  BQ1_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ1_chemicals$sample_date,
-  conc = BQ1_chemicals$k,
-  win_size_wks = 9
-)
-  #no3_n
-BQ1_chemicals$bq1_no3_n <- sapply(
-  BQ1_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ1_chemicals$sample_date,
-  conc = BQ1_chemicals$no3_n,
-  win_size_wks = 9
-)
-
-  #nh4_n
-BQ1_chemicals$bq1_nh4_n <- sapply(
-  BQ1_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ1_chemicals$sample_date,
-  conc = BQ1_chemicals$nh4_n,
-  win_size_wks = 9
-)
-#---BQ2---
-
-#Ca
-BQ2_chemicals$bq2_ca <- sapply(
-  BQ2_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ2_chemicals$sample_date,
-  conc = BQ2_chemicals$ca,
-  win_size_wks = 9
-)
-  #Mg
-BQ2_chemicals$bq2_mg <- sapply(
-  BQ2_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ2_chemicals$sample_date,
-  conc = BQ2_chemicals$mg,
-  win_size_wks = 9
-)
-  #k
-BQ2_chemicals$bq2_k <- sapply(
-  BQ2_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ2_chemicals$sample_date,
-  conc = BQ2_chemicals$k,
-  win_size_wks = 9
-)
-  #no3_n
-BQ2_chemicals$bq2_no3_n <- sapply(
-  BQ2_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ2_chemicals$sample_date,
-  conc = BQ2_chemicals$no3_n,
-  win_size_wks = 9
-)
-
-  #nh4_n
-BQ2_chemicals$bq2_nh4_n <- sapply(
-  BQ2_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ2_chemicals$sample_date,
-  conc = BQ2_chemicals$nh4_n,
-  win_size_wks = 9
-)
-
-  #---BQ3---
- #Ca
-BQ3_chemicals$bq3_ca <- sapply(
-  BQ3_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ3_chemicals$sample_date,
-  conc = BQ3_chemicals$ca,
-  win_size_wks = 9
-)
-  #Mg
-BQ3_chemicals$bq3_mg <- sapply(
-  BQ3_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ3_chemicals$sample_date,
-  conc = BQ3_chemicals$mg,
-  win_size_wks = 9
-)
-  #k
-BQ3_chemicals$bq3_k <- sapply(
-  BQ3_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ3_chemicals$sample_date,
-  conc = BQ3_chemicals$k,
-  win_size_wks = 9
-)
-  #no3_n
-BQ3_chemicals$bq3_no3_n <- sapply(
-  BQ3_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ3_chemicals$sample_date,
-  conc = BQ3_chemicals$no3_n,
-  win_size_wks = 9
-)
-
-  #nh4_n
-BQ3_chemicals$bq3_nh4_n <- sapply(
-  BQ3_chemicals$sample_date,
-  rolling_mean,
-  dates = BQ3_chemicals$sample_date,
-  conc = BQ3_chemicals$nh4_n,
-  win_size_wks = 9
-)
-  #---MPR---
- #Ca
-MPR_chemicals$mpr_ca <- sapply(
-  MPR_chemicals$sample_date,
-  rolling_mean,
-  dates = MPR_chemicals$sample_date,
-  conc = MPR_chemicals$ca,
-  win_size_wks = 9
-)
-  #Mg
-MPR_chemicals$mpr_mg <- sapply(
-  MPR_chemicals$sample_date,
-  rolling_mean,
-  dates = MPR_chemicals$sample_date,
-  conc = MPR_chemicals$mg,
-  win_size_wks = 9
-)
-  #k
-MPR_chemicals$mpr_k <- sapply(
-  MPR_chemicals$sample_date,
-  rolling_mean,
-  dates = MPR_chemicals$sample_date,
-  conc = MPR_chemicals$k,
-  win_size_wks = 9
-)
-  #no3_n
-MPR_chemicals$mpr_no3_n <- sapply(
-  MPR_chemicals$sample_date,
-  rolling_mean,
-  dates = MPR_chemicals$sample_date,
-  conc = MPR_chemicals$no3_n,
-  win_size_wks = 9
-)
-
-  #nh4_n
-MPR_chemicals$mpr_nh4_n <- sapply(
-  MPR_chemicals$sample_date,
-  rolling_mean,
-  dates = MPR_chemicals$sample_date,
-  conc = MPR_chemicals$nh4_n,
-  win_size_wks = 9
-)
-
-#4. Put rolling average data into new data frames
-  #---BQ1---
-BQ1_rolling <- BQ1_chemicals %>% 
-  select(sample_date, bq1_ca, bq1_mg, bq1_k, bq1_no3_n, bq1_nh4_n)
-
-  #---BQ2--
-BQ2_rolling <- BQ2_chemicals %>% 
-select(sample_date, bq2_ca, bq2_mg, bq2_k, bq2_no3_n, bq2_nh4_n)
-
-  #---BQ3#---
-BQ3_rolling <- BQ3_chemicals %>% 
-select(sample_date, bq3_ca, bq3_mg, bq3_k, bq3_no3_n, bq3_nh4_n)
-  #---MPR---
-MPR_rolling <- MPR_chemicals %>% 
-select(sample_date, mpr_ca, mpr_mg, mpr_k, mpr_no3_n, mpr_nh4_n)
-
-#5. Combine rolling data frames into one frame. This data frame will have columns sample date and columns for each stream's chemical. 
-
-streams_join <- full_join(BQ1_rolling,BQ2_rolling) 
-streams_join2 <- full_join(BQ3_rolling, MPR_rolling)
-stream_chemistry <- full_join(streams_join, streams_join2)
-
-  
-
-#6. Plot data
-
-  #6a. Plot the Potassium(k) data from all streams. 
-
-ggplot(data = stream_chemistry, aes(x = sample_date, y = bq1_ca))+
-  geom_line()
-
-ggplot(data = stream_chemistry, aes( x = sample_date, y = col=variable)) + 
-  geom_point() + 
-  stat_smooth() +
-  facet_wrap(~variable)
-
-  #6b. Plot the No3_n data from all streams. 
-  #6c. Plot the Mg data from all streams.
-  #6d. Plot the Ca data from all streams.
-  #6e. Plot the Nh4_n data from all streams. 
-
+#View(streams_longer) #use KablEextra 
 
 ```
 
