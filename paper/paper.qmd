@@ -16,13 +16,6 @@ A study (Schaefer et al. 2000) investigated the effects of stream water quality 
 Load relevant libraries and source data.
 
 ```{r}
-library(here)
-library(tidyverse)
-library(janitor)
-library(ggplot2)
-library(dplyr)
-library(kableExtra)
-
 source(here("R", "1_clean_data.R"))
 source(here("R", "2_processing_data.R"))
 source(here("R", "rolling_mean_function.R"))
@@ -62,7 +55,6 @@ mpr <- read_csv(here::here("data",
 The data cleaning process was as follows: 1. Loading in raw data. 2. Clean names: changing the names from upper case to lower-snake-case. 3. Filter data by only relevant chemicals/nutrients in the study. 4. Combine dataframes into one. 5. Pivot dataset and remove NAs.
 
 ```{r}
-source(here("R", "1_clean_data.R"))
 
 write_csv(bq1, here("outputs", "bq1_clean.csv"))
 write_csv(bq2, here("outputs", "bq2_clean.csv"))
@@ -76,6 +68,24 @@ After the data cleaning process, I further processed the data by filtering data 
 
 ```{r}
 source(here("R", "2_processing_data.R"))
+
+# Filter data by only relevant chemicals/nutrients in the study (k, no3_n, mg, ca, nh4_n). 
+
+bq1_chemicals <- bq1 %>%
+  select(sample_id,sample_date, k, no3_n, mg, ca, nh4_n)  
+
+bq2_chemicals <- bq2 %>% 
+  select(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)
+
+bq3_chemicals <- bq3 %>% 
+  select(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)
+
+mpr_chemicals <- mpr %>% 
+  select(sample_id, sample_date, k, no3_n, mg, ca, nh4_n)
+
+
+  # Combine data frames into a dataset called "streams". 
+streams <- rbind(bq1_chemicals, bq2_chemicals, bq3_chemicals, mpr_chemicals) 
 ```
 
 ## 3. Join datasets
@@ -116,6 +126,21 @@ kable_classic() %>%
 
 ## Results
 ```{r}
+#Plot
+stream_chemistry_plot <- ggplot(data = rolling_avg, aes(x = sample_date, y = rolling_avg)) + 
+  
+  geom_line(aes(color = sample_id)) +
+  
+  facet_wrap(~chemical, scales = "free_y", nrow = 5) +
+  #add line for hurricane Hugo disturbance 
+  geom_vline(xintercept = as.Date("1989-09-18"), linetype = "dashed", color = "black") + 
+  
+  labs( x = "Years", 
+        y = "Concentration", 
+        title = "Hurricane Effects on Stream Chemistry") +
+  theme_minimal() +
+  theme(legend.title = element_blank()) 
 
+stream_chemistry_plot
 ```
 

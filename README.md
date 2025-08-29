@@ -10,12 +10,12 @@ Isabella Segarra (University of California, Santa Barbara- Masters of Environmen
 
 ## Contents
 
--   data: Contains the raw data files.
--   docs: Contains the rendered analysis paper as an HTML. 
--   figs: Contains the final data visualization and flowchart. 
--   outputs: Contains the intermediate (e.g. cleaned data) and final dataframes.
--   paper: Contains the analysis Quarto markdown file.
--   R: Contains the code for cleaning raw data, processing data further, environment installation, functions, and plotting.
+-   [data](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/data): Contains the raw data files.
+-   [docs](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/docs): Contains the rendered analysis paper as an HTML. 
+-   [figs](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/figs): Contains the final data visualization and flowchart. 
+-   [outputs](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/outputs): Contains the intermediate (e.g. cleaned data) and final dataframes.
+-   [paper](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/paper): Contains the analysis Quarto markdown file.
+-   [R](https://github.com/IsabellaSegarra/eds214-project/tree/7aad82372929f8eacbe066818c4500fe4b7bc392/R): Contains the code for cleaning raw data, processing data further, environment installation, functions, and plotting.
 -   scratch: This includes scratch files. 
 
 
@@ -27,7 +27,9 @@ Isabella Segarra (University of California, Santa Barbara- Masters of Environmen
 The data is available through the Environmental Data Initiative <https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-luq.20.4923064> from the USDA Forest Service.
 
 ## How the analysis works
-In order to run the analysis, open the paper/paper.qmd file and click render.
+In order to replicate figure 3 from Schaefer et al. 2000, I first imported the raw data and changed column titles. Following cleaning the data, I filtered the data by stream site and by the time frame of the study. After this process, I joined the stream data into one dataset. The figure visualized stream nutrient concentration ove 
+
+
 
 ## Citations
 
