@@ -1,8 +1,8 @@
 # Reproducing a graph: Hurricane effects on stream chemistry
-
-[![final-graph.](figs/stream_chemistry.png)]
-
 This project is a recreation of figure 3 from Schaefer et al. (2000) investigating the effects of Hurricane Hugo on water chemistry in four streams in Bisley, Puerto Rico. 
+
+![final-graph.](figs/stream_chemistry.png)
+
 
 ## Contributor
 
