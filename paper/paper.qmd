@@ -19,7 +19,7 @@ Load relevant libraries and source data.
 library(here)
 source(here("1_clean_data.R"))
 source(here("2_processing_data.R"))
-source(here("R", "rolling_mean_function.R"))
+source(here("R","rolling_mean_function.R"))
 source(here("3_ggplot.R"))
 ```
 
