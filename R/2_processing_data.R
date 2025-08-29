@@ -52,13 +52,16 @@ rolling_avg <- #Store as new data frame called "rolling_avg"
   group_by(sample_id, chemical) %>% #Group dataframe by sample_id and chemical
   mutate(rolling_avg = sapply(sample_date, rolling_mean, dates = sample_date, conc = chem_conc, win_size_wks = 9)) #create new column with the 
 
-  #Make KableExtra table
+#Make KableExtra table
 streams_data_table <- rolling_avg %>% 
 kable(col.names = c("sample ID", "date", "chemical", "chemical concentration", 
                     "rolling average")) %>% 
   kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
 kable_classic() %>%
   scroll_box(height = "300px", width = "700px")
+
+  #View table
+streams_data_table 
 
 
 #---export datasets and tables---

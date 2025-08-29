@@ -9,7 +9,7 @@ execute:
 
 # Background
 
-A study (Schaefer et al. 2000) investigated the effects of stream water quality in Puerto Rico after the 1989 Hurricane Hugo. They analyzed the level of nutrients over time and found that potassium levels stayed elevated for years afterwards.
+A study (Schaefer et al. 2000) investigated the effects of stream water quality in five streams in Puerto Rico after the 1989 Hurricane Hugo. They analyzed the level of nutrients over time and found that potassium levels stayed elevated for years afterwards.
 
 ## Data
 
@@ -105,7 +105,8 @@ rolling_avg <- #Store as new data frame called "rolling_avg"
 View data.
 
 ```{r}
-streams_data_table <- rolling_avg %>% 
+rolling_avg %>% 
+  slice(1:100) %>% 
 kable(col.names = c("sample ID", "date", "chemical", "chemical concentration", 
                     "rolling average")) %>% 
   kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
