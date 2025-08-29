@@ -1,8 +1,8 @@
 # Reproducing a graph: Hurricane effects on stream chemistry
 
-[Insert final graph here]
+[![final-graph.](figs/stream_chemistry.png)]
 
-This project is a recreation of figure 3 from Schaefer et al. (2000) investigating the effects of Hurricane Hugo on water chemistry in four streams in Bisley, Puerto Rico.
+This project is a recreation of figure 3 from Schaefer et al. (2000) investigating the effects of Hurricane Hugo on water chemistry in four streams in Bisley, Puerto Rico. 
 
 ## Contributor
 
@@ -10,20 +10,24 @@ Isabella Segarra (University of California, Santa Barbara- Masters of Environmen
 
 ## Contents
 
--   data: Contains the raw files.
--   R: Contains the code for procesing the raw data files, environment   installation, and functions.
+-   data: Contains the raw data files.
+-   docs: Contains the rendered analysis paper as an HTML. 
+-   figs: Contains the final data visualization and flowchart. 
+-   outputs: Contains the intermediate (e.g. cleaned data) and final dataframes.
 -   paper: Contains the analysis Quarto markdown file.
--   outputs: Contains the intermediate and final outputs.
--   figs: Contains the final data visualizations. 
--   scratch: This includes data exploration file.
--   docs: Contains the Quarto doc. 
+-   R: Contains the code for cleaning raw data, processing data further, environment installation, functions, and plotting.
+-   scratch: This includes scratch files. 
+
 
 ## Flow chart 
-![flowchart.](figs/Flowchart.png){width=50%}
+![flowchart.](figs/Flowchart.png)
 
 ## How to access data
 
 The data is available through the Environmental Data Initiative <https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-luq.20.4923064> from the USDA Forest Service.
+
+## How the analysis works
+In order to run the analysis, open the paper/paper.qmd file and click render.
 
 ## Citations
 
