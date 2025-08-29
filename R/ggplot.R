@@ -18,7 +18,9 @@ stream_chemistry_plot <- ggplot(data = rolling_avg, aes(x = sample_date, y = rol
   labs( x = "Years", 
         y = "Concentration", 
         title = "Hurricane Effects on Stream Chemistry") +
-  theme_minimal() 
+  theme_minimal() +
+  theme(legend.title = element_blank()) 
+
 
 stream_chemistry_plot
 

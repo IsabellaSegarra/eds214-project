@@ -1,7 +1,7 @@
 #................Cleaning stream chemistry data................
 # This R script is for importing and cleaning the data. 
 
-#---set up---
+#---Set up---
   #clear global environment
 rm(list=ls())
 
@@ -35,4 +35,11 @@ mpr <- read_csv(here::here("data",
                            "stream-water-pr",
                            "RioMameyesPuenteRoto.csv")) %>% 
   clean_names() 
+
+#---export cleaned datasets---
+write_csv(bq1, here("outputs", "bq1_clean.csv"))
+write_csv(bq2, here("outputs", "bq2_clean.csv"))
+write_csv(bq3, here("outputs", "bq3_clean.csv"))
+write_csv(mpr, here("outputs", "mpr_clean.csv"))
+
 

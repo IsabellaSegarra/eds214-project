@@ -1,6 +1,10 @@
 ---
 title: "Hurricane Effects on Stream Chemistry"
 format: html
+execute: 
+  echo: true
+  warning: false
+  message: false
 ---
 
 # Background
@@ -12,8 +16,6 @@ A study (Schaefer et al. 2000) investigated the effects of stream water quality 
 Load relevant libraries and source data.
 
 ```{r}
-#| echo: false
-
 library(here)
 library(tidyverse)
 library(janitor)
@@ -61,11 +63,16 @@ The data cleaning process was as follows: 1. Loading in raw data. 2. Clean names
 
 ```{r}
 source(here("R", "1_clean_data.R"))
+
+write_csv(bq1, here("outputs", "bq1_clean.csv"))
+write_csv(bq2, here("outputs", "bq2_clean.csv"))
+write_csv(bq3, here("outputs", "bq3_clean.csv"))
+write_csv(mpr, here("outputs", "mpr_clean.csv"))
 ```
 
 ## 2. Filter data
 
-After the data cleaning process, I further processed the data by filtering data by relevant chemical and filtering by time frame of study.
+After the data cleaning process, I further processed the data by filtering data by relevant chemical and filtering by time frame of study (1988-1994).
 
 ```{r}
 source(here("R", "2_processing_data.R"))
@@ -95,7 +102,7 @@ rolling_avg <- #Store as new data frame called "rolling_avg"
 
 ```
 
-View data
+View data.
 
 ```{r}
 streams_data_table <- rolling_avg %>% 
